@@ -1,0 +1,31 @@
+name: 'event_management'
+
+
+services:
+  backend:
+    container_name: "backend"
+    working_dir: /app/django_app/
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ../django_app:/app/django_app/
+    command: >
+      sh -c "python manage.py runserver 0.0.0.0:8000"
+
+  celery-tasks:
+    container_name: "celery_tasks"
+    working_dir: /app/django_app/
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile
+    volumes:
+      - ../django_app:/app/django_app/
+    command: celery -A celery_app.app worker --loglevel=info
+
+  redis:
+    image: redis:7.4
+    container_name: "redis"
+    hostname: redis
