@@ -13,7 +13,22 @@ services:
     volumes:
       - ../django_app:/app/django_app/
     command: >
-      sh -c "python manage.py runserver 0.0.0.0:8000"
+      sh -c "python manage.py makemigrations &&
+      python manage.py migrate && 
+      python manage.py runserver 0.0.0.0:8000"
+      
+
+  test:
+    container_name: "test_endpoints"
+    working_dir: /app/django_app/
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile
+    volumes:
+      - ../django_app:/app/django_app/
+    command: >
+      sh -c "cd /app/django_app/event_api/tests && pytest"
+      
 
   celery-tasks:
     container_name: "celery_tasks"
@@ -24,6 +39,10 @@ services:
     volumes:
       - ../django_app:/app/django_app/
     command: celery -A celery_app.app worker --loglevel=info
+    depends_on:
+      - redis
+    links:
+      - redis
 
   redis:
     image: redis:7.4
