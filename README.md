@@ -6,9 +6,6 @@ This project provides an Event Management API built using Django REST framework.
 
 - [Installation](#installation)
 - [API Endpoints](#api-endpoints)
-  - [User Management](#user-management)
-  - [Event Management](#event-management)
-  - [Event Participant Management](#event-participant-management)
 
 
 ## Installation
